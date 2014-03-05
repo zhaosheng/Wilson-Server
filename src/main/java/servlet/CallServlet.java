@@ -3,6 +3,8 @@ package servlet;
 
 import database.Database;
 import database.SQLite;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
@@ -74,13 +76,17 @@ public class CallServlet extends HttpServlet
     for (Message message : messageList)
     {
       JSONObject jsonObject = new JSONObject();
+      jsonObject.put("user", message.getUser());
       jsonObject.put("message", message.getMessage());
       jsonArray.put(jsonObject);
     }
-    JSONWriter jsonWriter = new JSONWriter(new OutputStreamWriter(resp.getOutputStream()))
-        .array()
-          .value(jsonArray)
-        .endArray();
+
+    resp.setCharacterEncoding("UTF-8");
+    new JSONWriter(resp.getWriter())
+        .object()
+        .key("messageArray")
+        .value(jsonArray)
+        .endObject();
 
 //    resp.sendRedirect("/");
   }
